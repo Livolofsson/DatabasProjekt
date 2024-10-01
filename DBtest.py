@@ -27,10 +27,12 @@ mydb = pymysql.connect(
 
 mycursor = mydb.cursor()
 
+#mycursor.execute("DROP TABLE IF EXISTS Department")
+
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  department_id int, 
-                 title varchar(255),  
-                 description varchar(255),
+                 title TEXT,  
+                 description TEXT,
                  parent_id int,
                  PRIMARY KEY (department_id),
                  FOREIGN KEY (parent_id) REFERENCES Department(department_id)
@@ -46,8 +48,6 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS User (
                  consent_to_newsletter tinyint(1),
                  PRIMARY KEY (personnr)
                  );""")
-
-#mycursor.execute("DROP TABLE IF EXISTS User")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS OrderUser (
                  order_id int, 
@@ -103,6 +103,38 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Product_Keyword (
                  FOREIGN KEY (product_id) REFERENCES Product(product_id), 
                  PRIMARY KEY (product_id, keyword)
                  );""")
+#departments
+mycursor.execute("INSERT INTO Department VALUES (1, 'Home Page', 'Welcome to AltOnline AB, a leader in online sales in Sweden. Here you can find everything from clothes, electronics and skincare.', NULL)")
+mycursor.execute("INSERT INTO Department VALUES(2, 'Clothes', 'Clothes for women, men and kids', 1)")
+mycursor.execute("INSERT INTO Department VALUES(3, 'Woman', 'Clothes for women', 2)")
+mycursor.execute("INSERT INTO Department VALUES(4, 'Men', 'Clothes for men', 2)")
+mycursor.execute("INSERT INTO Department VALUES(5, 'Kids', 'Clothes for kids', 2)")
+
+mycursor.execute("INSERT INTO Department VALUES(6, 'Skincare', 'Skincare for all types of skin', 1)")
+mycursor.execute("INSERT INTO Department VALUES(7, 'Face', 'Skincare for the face', 6)")
+mycursor.execute("INSERT INTO Department VALUES(8, 'Body', 'Skincare for the body', 6)")
+mycursor.execute("INSERT INTO Department VALUES(9, 'Sun products', 'Skincare when it is sunny', 6)")
+
+#products
+#(id, title, description, product_price, tax, discount, stock, is_featured, department_id)
+mycursor.execute("INSERT INTO Product VALUES(1, 'Dress', 'Short blue dress', 100, 10, 20, 1000, 1, 3)")
+mycursor.execute("INSERT INTO Product VALUES(2, 'Jeans', 'Stretchy blue jeans', 99.90, 15.99, 0, 500, 1, 3)")
+mycursor.execute("INSERT INTO Product VALUES(3, 'Cardigan', 'Soft pink wool cardigan', 200, 19.90, 0, 100, 1, 3)")
+
+mycursor.execute("INSERT INTO Product VALUES(4, 'Jeans', 'Black jeans', 500, 10, 0, 50, 1, 4)")
+mycursor.execute("INSERT INTO Product VALUES(5, 'Shirt', 'Red cotton shirt', 1000, 50, 0, 0, 0, 4)")
+mycursor.execute("INSERT INTO Product VALUES(6, 'Shorts', 'Green and yellow cotton shorts', 600, 50, 60, 100, 1, 4)")
+
+mycursor.execute("INSERT INTO Product VALUES(7, 'Jeans', 'White jeans', 400, 40, 0, 50, 0, 5)")
+mycursor.execute("INSERT INTO Product VALUES(8, 'Skirt', 'Red skirt dotted in white', 300, 30, 0, 100, 0, 5)")
+
+mycursor.execute("INSERT INTO Product VALUES(9, 'Daycream', 'Daycream for oily skin', 150, 15, 0, 100, 1, 7)")
+mycursor.execute("INSERT INTO Product VALUES(10, 'Peeling', 'Peeling to help with dry skin', 100, 10, 0, 50, 0, 7)")
+
+mycursor.execute("INSERT INTO Product VALUES(11, 'Shower gel', 'Shower gel with shea butter', 150, 15, 50, 20, 1, 8)")
+mycursor.execute("INSERT INTO Product VALUES(12, 'Body lotion', 'Body lotion for everyday use', 400, 40, 0, 60, 0, 8)")
+
+mycursor.execute("INSERT INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 10, 0, 30, 1, 9)")
 
 # mycursor.execute("SELECT * FROM CUSTOMER")
 # records = mycursor.fetchall()
@@ -116,14 +148,5 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Product_Keyword (
 
 
 #entities: department, user, order, product, product_in_order, product_keyword, review
-
-
-#('CUSTOMER',)
-#('DEPARTMENT',)
-#('KEYWORD',)
-#('ORDER_CONTAINS',)
-#('ORDER_INFO',)
-#('PRODUCT',)
-#('REVIEW',)
 
 mydb.close()
