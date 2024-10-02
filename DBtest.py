@@ -29,6 +29,11 @@ mycursor = mydb.cursor()
 
 #mycursor.execute("DROP TABLE IF EXISTS Department")
 
+#mycursor.execute("DROP TABLE IF EXISTS Review")
+#mycursor.execute("DROP TABLE IF EXISTS Product_In_Order")
+#mycursor.execute("DROP TABLE IF EXISTS OrderUser")
+#mycursor.execute("DROP TABLE IF EXISTS User")
+
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  department_id int, 
                  title TEXT,  
@@ -39,7 +44,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  );""")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS User (
-                 personnr int,
+                 personnr varchar(11),
                  name varchar(255), 
                  phone_no int(10), 
                  email varchar(255), 
@@ -56,7 +61,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS OrderUser (
                  pay_ref varchar(255), 
                  tracking_nr int, 
                  status tinyint(1), 
-                 user_id int, 
+                 user_id varchar(11), 
                  PRIMARY KEY (order_id), 
                  FOREIGN KEY (user_id) REFERENCES User(personnr)
                  );""")
@@ -76,7 +81,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Product (
                  );""")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Review (
-                 user_id int,
+                 user_id varchar(11),
                  product_id int, 
                  description text, 
                  stars tinyint, 
@@ -136,10 +141,20 @@ mycursor.execute("INSERT INTO Product VALUES(12, 'Body lotion', 'Body lotion for
 
 mycursor.execute("INSERT INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 10, 0, 30, 1, 9)")
 
-# mycursor.execute("SELECT * FROM CUSTOMER")
-# records = mycursor.fetchall()
-# column_names = [desc[0] for desc in mycursor.description]
-# print("Column names", column_names)
+#users 
+mycursor.execute("INSERT INTO User VALUES(650105-1122, 'Saga Andersson', 0722336776, 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', 1)")
+mycursor.execute("INSERT INTO User VALUES(750210-4444, 'Bert Gustavsson', 0738439988, 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', 0)")
+
+mycursor.execute("SELECT * FROM User")
+rows = mycursor.fetchall()
+for row in rows: 
+    print(row)
+
+
+#mycursor.execute("SELECT * FROM User")
+#records = mycursor.fetchall()
+#column_names = [desc[0] for desc in mycursor.description]
+#print("Column names", column_names)
 
 # print("Total number of rows in table: ", mycursor.rowcount)
 # for row in records: 
