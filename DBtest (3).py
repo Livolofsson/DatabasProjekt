@@ -28,6 +28,7 @@ mydb = pymysql.connect(
 mycursor = mydb.cursor()
 
 #mycursor.execute("DROP TABLE IF EXISTS Department")
+
 mycursor.execute("DROP TABLE IF EXISTS Review")
 mycursor.execute("DROP TABLE IF EXISTS Product_In_Order")
 mycursor.execute("DROP TABLE IF EXISTS OrderUser")
@@ -35,21 +36,21 @@ mycursor.execute("DROP TABLE IF EXISTS User")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  department_id int, 
-                 title TEXT,  
-                 description TEXT,
+                 title TEXT NOT NULL,  
+                 description TEXT NOT NULL,
                  parent_id int,
                  PRIMARY KEY (department_id),
                  FOREIGN KEY (parent_id) REFERENCES Department(department_id)
                  );""")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS User (
-                 personnr varchar(11),
+                 personnr int,
                  name varchar(255), 
                  phone_no varchar(255), 
-                 email varchar(255), 
+                 email varchar(255) NOT NULL, 
                  address varchar(255), 
-                 password varchar(255), 
-                 consent_to_newsletter tinyint(1),
+                 password varchar(255) NOT NULL, 
+                 consent_to_newsletter BOOLEAN,
                  PRIMARY KEY (personnr)
                  );""")
 
@@ -60,27 +61,27 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS OrderUser (
                  pay_ref varchar(255), 
                  tracking_nr int, 
                  status tinyint(1), 
-                 user_id varchar(11), 
+                 user_id int NOT NULL, 
                  PRIMARY KEY (order_id), 
                  FOREIGN KEY (user_id) REFERENCES User(personnr)
                  );""")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Product (
                  product_id int, 
-                 title varchar(255), 
+                 title varchar(255) NOT NULL, 
                  description text, 
-                 product_price decimal(10,2),
-                 tax decimal(5,2), 
-                 discount decimal(5,2), 
-                 stock int, 
-                 is_featured varchar(255), 
+                 product_price decimal(10,2) NOT NULL,
+                 tax decimal(5,2) NOT NULL, 
+                 discount decimal(5,2) , 
+                 stock int DEFAULT 0, 
+                 is_featured BOOLEAN DEFAULT FALSE, 
                  department_id int,
                  PRIMARY KEY (product_id), 
                  FOREIGN KEY (department_id) REFERENCES Department(department_id)
                  );""")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Review (
-                 user_id varchar(11),
+                 user_id int,
                  product_id int, 
                  description text, 
                  stars tinyint, 
@@ -141,15 +142,15 @@ mycursor.execute("INSERT INTO Product VALUES(12, 'Body lotion', 'Body lotion for
 mycursor.execute("INSERT INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 10, 0, 30, 1, 9)")
 
 #users 
-mycursor.execute("INSERT INTO User VALUES('650105-1122', 'Saga Andersson', '0722336776', 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', 1)")
-mycursor.execute("INSERT INTO User VALUES('750210-4444', 'Bert Gustavsson', '0738439988', 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', 0)")
+mycursor.execute("INSERT INTO User VALUES(6501051122, 'Saga Andersson', '0722336776', 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', TRUE)")
+mycursor.execute("INSERT INTO User VALUES(7502104444, 'Bert Gustavsson', '0738439988', 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', FALSE)")
 
 #reviews
-mycursor.execute("INSERT INTO Review VALUES ('650105-1122', 1, 'I looove this dress. It is so soft and I use it several times a week! Best dress ever!!!', 5, '2024-10-02')")
-mycursor.execute("INSERT INTO Review VALUES ('750210-4444', 1, 'I did not like this dress at all!! It was way too tiny. I had too wide shoulders to fit, not a good dress for a big strong man!', 5, '2024-10-02')")
+mycursor.execute("INSERT INTO Review VALUES (6501051122, 1, 'I looove this dress. It is so soft and I use it several times a week! Best dress ever!!!', 5, '2024-10-02')")
+mycursor.execute("INSERT INTO Review VALUES (7502104444, 1, 'I did not like this dress at all!! It was way too tiny. I had too wide shoulders to fit, not a good dress for a big strong man!', 5, '2024-10-02')")
 
 #order
-mycursor.execute("INSERT INTO OrderUser VALUES (1, '2024-10-02', '2024-10-02', 'PAY12345', 123456, 1, '650105-1122')")
+mycursor.execute("INSERT INTO OrderUser VALUES (1, '2024-10-02', '2024-10-02', 'PAY12345', 123456, 1, 6501051122)")
 mycursor.execute("INSERT INTO Product_In_Order VALUES (1, 1, 2, 90)")
 mycursor.execute("INSERT INTO Product_In_Order VALUES (2, 1, 1, 115.89)")
 
