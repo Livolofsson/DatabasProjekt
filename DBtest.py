@@ -29,10 +29,10 @@ mycursor = mydb.cursor()
 
 #mycursor.execute("DROP TABLE IF EXISTS Department")
 
-#mycursor.execute("DROP TABLE IF EXISTS Review")
-#mycursor.execute("DROP TABLE IF EXISTS Product_In_Order")
-#mycursor.execute("DROP TABLE IF EXISTS OrderUser")
-#mycursor.execute("DROP TABLE IF EXISTS User")
+mycursor.execute("DROP TABLE IF EXISTS Review")
+mycursor.execute("DROP TABLE IF EXISTS Product_In_Order")
+mycursor.execute("DROP TABLE IF EXISTS OrderUser")
+mycursor.execute("DROP TABLE IF EXISTS User")
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  department_id int, 
@@ -46,7 +46,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
 mycursor.execute("""CREATE TABLE IF NOT EXISTS User (
                  personnr varchar(11),
                  name varchar(255), 
-                 phone_no int(10), 
+                 phone_no varchar(255), 
                  email varchar(255), 
                  address varchar(255), 
                  password varchar(255), 
@@ -56,8 +56,8 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS User (
 
 mycursor.execute("""CREATE TABLE IF NOT EXISTS OrderUser (
                  order_id int, 
-                 order_date varchar(255), 
-                 date_of_last_change varchar(255), 
+                 order_date date, 
+                 date_of_last_change date, 
                  pay_ref varchar(255), 
                  tracking_nr int, 
                  status tinyint(1), 
@@ -85,7 +85,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Review (
                  product_id int, 
                  description text, 
                  stars tinyint, 
-                 review_date varchar(255),
+                 review_date date,
                  FOREIGN KEY (user_id) REFERENCES User(personnr), 
                  FOREIGN KEY (product_id) REFERENCES Product(product_id),
                  PRIMARY KEY (user_id, product_id),
@@ -142,14 +142,46 @@ mycursor.execute("INSERT INTO Product VALUES(12, 'Body lotion', 'Body lotion for
 mycursor.execute("INSERT INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 10, 0, 30, 1, 9)")
 
 #users 
-mycursor.execute("INSERT INTO User VALUES(650105-1122, 'Saga Andersson', 0722336776, 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', 1)")
-mycursor.execute("INSERT INTO User VALUES(750210-4444, 'Bert Gustavsson', 0738439988, 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', 0)")
+mycursor.execute("INSERT INTO User VALUES('650105-1122', 'Saga Andersson', '0722336776', 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', 1)")
+mycursor.execute("INSERT INTO User VALUES('750210-4444', 'Bert Gustavsson', '0738439988', 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', 0)")
 
-mycursor.execute("SELECT * FROM User")
-rows = mycursor.fetchall()
-for row in rows: 
-    print(row)
+#reviews
+mycursor.execute("INSERT INTO Review VALUES ('650105-1122', 1, 'I looove this dress. It is so soft and I use it several times a week! Best dress ever!!!', 5, '2024-10-02')")
+mycursor.execute("INSERT INTO Review VALUES ('750210-4444', 1, 'I did not like this dress at all!! It was way too tiny. I had too wide shoulders to fit, not a good dress for a big strong man!', 5, '2024-10-02')")
 
+#order
+mycursor.execute("INSERT INTO OrderUser VALUES (1, '2024-10-02', '2024-10-02', 'PAY12345', 123456, 1, '650105-1122')")
+mycursor.execute("INSERT INTO Product_In_Order VALUES (1, 1, 2, 90)")
+mycursor.execute("INSERT INTO Product_In_Order VALUES (2, 1, 1, 115.89)")
+
+
+#home page descripition 
+#mycursor.execute("SELECT description FROM Department WHERE department_id = 1")
+#description = mycursor.fetchone() 
+
+#if description: 
+    #print(description[0])
+
+#list of top level departments with field needed for the homepage 
+#mycursor.execute("SELECT title, description FROM Department WHERE parent_id = 1")
+#departments = mycursor.fetchall()
+
+#top_level_departments = [f"{department[0]}: {department[1]}" for department in departments]
+#print(top_level_departments)
+
+#list of featured products with fields needed for the homepage 
+#mycursor.execute("SELECT title, description, product_price, tax, discount FROM Product WHERE is_featured = 1")
+#products = mycursor.fetchall() 
+#featured_products = [f"{product[0]}: {product[1]} for the price of {product[2]} euros including tax {product[3]} and discounting {product[4]} euros due to {product[0]} being on sale." for product in products]
+
+
+#deleting insertions 
+# mycursor.execute("DELETE FROM Review")
+# mycursor.execute("DELETE FROM Product_In_Order")
+# mycursor.execute("DELETE FROM Product_Keyword")
+# mycursor.execute("DELETE FROM Product")
+# mycursor.execute("DELETE FROM OrderUser")
+# mycursor.execute("DELETE FROM User")
 
 #mycursor.execute("SELECT * FROM User")
 #records = mycursor.fetchall()
