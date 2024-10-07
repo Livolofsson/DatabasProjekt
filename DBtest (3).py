@@ -27,13 +27,6 @@ mydb = pymysql.connect(
 
 mycursor = mydb.cursor()
 
-#mycursor.execute("DROP TABLE IF EXISTS Department")
-
-# mycursor.execute("DROP TABLE IF EXISTS Review")
-# mycursor.execute("DROP TABLE IF EXISTS Product_In_Order")
-# mycursor.execute("DROP TABLE IF EXISTS OrderUser")
-# mycursor.execute("DROP TABLE IF EXISTS User")
-
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Department (
                  department_id int, 
                  title TEXT NOT NULL,  
@@ -92,6 +85,7 @@ mycursor.execute("""CREATE TABLE IF NOT EXISTS Review (
                  CHECK (0 <= stars <= 5)
                  );""")
 
+
 mycursor.execute("""CREATE TABLE IF NOT EXISTS Product_In_Order (
                  product_id int,
                  order_id int,
@@ -122,27 +116,24 @@ mycursor.execute("INSERT IGNORE INTO Department VALUES(9, 'Sun products', 'Skinc
 
 #products
 #(id, title, description, product_price, tax, discount, stock, is_featured, department_id)
-mycursor.execute("INSERT IGNORE INTO Product VALUES(1, 'Dress', 'Short blue dress', 100, 10, 20, 1000, TRUE, 3)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(2, 'Jeans', 'Stretchy blue jeans', 99.90, 15.99, 0, 500, TRUE, 3)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(3, 'Cardigan', 'Soft pink wool cardigan', 200, 19.90, 0, 100, TRUE, 3)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(1, 'Dress', 'Short blue dress', 100, 0.10, 0.20, 1000, TRUE, 3)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(2, 'Jeans', 'Stretchy blue jeans', 99.90, 0.10, 0, 500, TRUE, 3)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(3, 'Cardigan', 'Soft pink wool cardigan', 15.99, 0.10, 0, 100, TRUE, 3)")
 
-mycursor.execute("INSERT IGNORE INTO Product VALUES(4, 'Jeans', 'Black jeans', 500, 10, 0, 50, TRUE, 4)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(5, 'Shirt', 'Red cotton shirt', 1000, 50, 0, 0, FALSE, 4)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(6, 'Shorts', 'Green and yellow cotton shorts', 600, 50, 60, 100, TRUE, 4)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(4, 'Jeans', 'Black jeans', 500, 0.10, 0, 50, TRUE, 4)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(5, 'Shirt', 'Red cotton shirt', 1000, 20, 0.10, 0, FALSE, 4)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(6, 'Shorts', 'Green and yellow cotton shorts', 600, 0.10, 0.60, 100, TRUE, 4)")
 
-mycursor.execute("INSERT IGNORE INTO Product VALUES(7, 'Jeans', 'White jeans', 400, 40, 0, 50, FALSE, 5)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(8, 'Skirt', 'Red skirt dotted in white', 300, 30, 0, 100, FALSE, 5)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(7, 'Jeans', 'White jeans', 400, 0.10, 0, 50, FALSE, 5)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(8, 'Skirt', 'Red skirt dotted in white', 300, 0.10, 0, 100, FALSE, 5)")
 
-mycursor.execute("INSERT IGNORE INTO Product VALUES(9, 'Daycream', 'Daycream for oily skin', 150, 15, 0, 100, TRUE, 7)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(10, 'Peeling', 'Peeling to help with dry skin', 100, 10, 0, 50, FALSE, 7)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(9, 'Daycream', 'Daycream for oily skin', 150, 0.10, 0, 100, TRUE, 7)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(10, 'Peeling', 'Peeling to help with dry skin', 100, 0.10, 0, 50, FALSE, 7)")
 
-mycursor.execute("INSERT IGNORE INTO Product VALUES(11, 'Shower gel', 'Shower gel with shea butter', 150, 15, 50, 20, TRUE, 8)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(12, 'Body lotion', 'Body lotion for everyday use', 400, 40, 0, 60, FALSE, 8)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(11, 'Shower gel', 'Shower gel with shea butter', 150, 0.10, 0.50, 20, TRUE, 8)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(12, 'Body lotion', 'Body lotion for everyday use', 400, 0.10, 0, 60, FALSE, 8)")
 
-mycursor.execute("INSERT IGNORE INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 10, 0, 30, TRUE, 9)")
-
-mycursor.execute("INSERT IGNORE INTO Product VALUES(14, 'Hej', 'Hej', 100, 10, 0, 30, TRUE, 9)")
-mycursor.execute("INSERT IGNORE INTO Product VALUES(15, 'Hej', 'Hej', 100, 10, 0, 30, TRUE, 9)")
+mycursor.execute("INSERT IGNORE INTO Product VALUES(13, 'Sun screen', 'Sun screen for everyday use', 100, 0.10, 0, 30, TRUE, 9)")
 #users 
 mycursor.execute("INSERT IGNORE INTO User VALUES('196501051122', 'Saga Andersson', '0722336776', 'saga_andersson@outlook.com', 'Bergsvägen 3 47887 Uppsala', '4g4s4nd3rsson', TRUE)")
 mycursor.execute("INSERT IGNORE INTO User VALUES('197502104444', 'Bert Gustavsson', '0738439988', 'bert_gustavsson@outlook.com', 'Kroksgatan 10 99577 Stockholm', 'b3rtgust4vss0n', FALSE)")
@@ -260,38 +251,30 @@ departments = mycursor.fetchall()
 mycursor.execute("SELECT title, description, product_price, tax, discount FROM Product WHERE is_featured = TRUE")
 products = mycursor.fetchall() 
 featured_products = [f"{product[0]}: {product[1]} for the price of {product[2]} euros including tax {product[3]} and discounting {product[4]} euros due to {product[0]} being on sale." for product in products]
-[f"{product[0]}: {product[1]} for the price of {product[2]*(sum(1+product[3]))} euros including tax {product[3]} and discounting {product[4]} euros due to {product[0]} being on sale." for product in products]
+
 #product_id with matching keyword 
 mycursor.execute("SELECT DISTINCT product_id FROM Product_Keyword where keyword in (select keyword from Product_Keyword where product_id = 1) and product_id != 1")
 products1 = mycursor.fetchall()
 product_keyword = [product[0] for product in products1]
 
 #Given a department, list of all its products (title, short description, current retail price) with their average rating
-mycursor.execute("SELECT product_price + tax - discount AS retail_price FROM Product WHERE product_id=1")
-retail_price = mycursor.fetchall() 
-print(retail_price[0])
-#mycursor.execute("SELECT title, description, ")
+mycursor.execute("""SELECT Product.title, Product.description, (Product.product_price + Product.tax - Product.discount) AS retail_price, AVG(Review.stars) as avg_rating
+                FROM Product
+                LEFT JOIN Review ON Review.product_id = Product.product_id
+                GROUP BY Product.product_id""")
+result = mycursor.fetchall()
+print(result)
 
+#Retrieve total price of a product
+mycursor.execute("select product_price * (1 + tax) * (1 - discount) from Product where product_id = 1")
+products_price = mycursor.fetchall() 
+product_price = [product[0] for product in products_price]
+print(product_price)
 
-#deleting insertions 
-# mycursor.execute("DELETE FROM Review")
-# mycursor.execute("DELETE FROM Product_In_Order")
-# mycursor.execute("DELETE FROM Product_Keyword")
-# mycursor.execute("DELETE FROM Product")
-# mycursor.execute("DELETE FROM OrderUser")
-# mycursor.execute("DELETE FROM User")
-
-#mycursor.execute("SELECT * FROM User")
-#records = mycursor.fetchall()
-#column_names = [desc[0] for desc in mycursor.description]
-#print("Column names", column_names)
-
-# print("Total number of rows in table: ", mycursor.rowcount)
-# for row in records: 
-#     print(row)
-
-
-
-#entities: department, user, order, product, product_in_order, product_keyword, review
+#retrieve products on sale sorted in descending order
+mycursor.execute("""select product_id, title, discount from Product where discount !=0 order by discount desc""") 
+products_on_sale = mycursor.fetchall() 
+product_sale = [product[0] for product in products_on_sale]
+print(product_sale)
 
 mydb.close()
